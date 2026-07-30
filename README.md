@@ -9,9 +9,6 @@ dựng cho GDGoC AI Challenge.
 
 ## Video demo
 
-GIF dưới đây là trận đấu kết thúc tự nhiên dài nhất trong các seed đã kiểm tra.
-Video dừng ngay khi trận đấu kết thúc, không thêm các frame đứng im.
-
 ![Ba Bomberland AI agent thi đấu](assets/demo-longest.gif)
 
 ## Kết quả đánh giá PPO
