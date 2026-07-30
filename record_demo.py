@@ -125,9 +125,14 @@ def create_match(seed: int):
     return engine, agents
 
 
-def record(output: Path, frames: int = 420) -> None:
-    torch.manual_seed(22)
-    engine, agents = create_match(22)
+def record(output: Path, frames: int = 400, seed: int = 23) -> None:
+    torch.manual_seed(seed)
+    engine = LocalBomberland(seed=seed, player_count=3)
+    agents = {
+        "agent_1": PPOAgent("bomberland_ppo.pt", stochastic=True),
+        "agent_2": DefensiveAgent(),
+        "agent_3": AggressiveAgent(),
+    }
     images = []
     for total_step in range(frames):
         images.append(render_frame(engine, total_step))
@@ -138,6 +143,8 @@ def record(output: Path, frames: int = 420) -> None:
             if engine.players[key].alive
         }
         engine.step(actions)
+        if sum(player.alive for player in engine.players.values()) <= 1:
+            break
     output.parent.mkdir(parents=True, exist_ok=True)
     images[0].save(
         output,
@@ -152,7 +159,8 @@ def record(output: Path, frames: int = 420) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", type=Path, default=Path("assets/demo.gif"))
-    parser.add_argument("--frames", type=int, default=420)
+    parser.add_argument("--output", type=Path, default=Path("assets/demo-longest.gif"))
+    parser.add_argument("--frames", type=int, default=400)
+    parser.add_argument("--seed", type=int, default=23)
     args = parser.parse_args()
-    record(args.output, args.frames)
+    record(args.output, args.frames, args.seed)
