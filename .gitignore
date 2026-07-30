@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Obsolete checkpoint from the earlier single-agent prototype.
+bomberman_ppo.pt
