@@ -10,6 +10,21 @@ Three-agent Bomberland simulation for the GDGoC AI Challenge:
 
 ![Bomberland AI agents — longest active match](assets/demo-longest.gif)
 
+## PPO benchmark
+
+Agent 1 was evaluated against the Defensive and Aggressive agents over 30
+matches, with a maximum of 200 steps per match.
+
+| Metric | Result |
+|---|---:|
+| Win rate | **36.7%** (11/30) |
+| Survival rate | **40.0%** (12/30) |
+| Average score | **24.7** |
+| Bomb actions | **178** |
+
+The PPO reward encourages bomb avoidance, box destruction, opponent pressure,
+well-timed bomb placement, and surviving as the final agent.
+
 ## Run the web arena
 
 ```bash
