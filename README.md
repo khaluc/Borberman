@@ -8,7 +8,7 @@ Three-agent Bomberland simulation for the GDGoC AI Challenge:
 
 ## Demo
 
-![Bomberland AI agents playing](assets/demo.gif)
+![Bomberland AI agents — 420-step single match](assets/demo-420.gif)
 
 ## Run the web arena
 
