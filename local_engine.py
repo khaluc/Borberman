@@ -152,6 +152,9 @@ class LocalBomberland:
             owner = self.players[bomb.owner]
             owner.bombs += 1
             owner.score += len(destroyed) * 10
+            for player in self.players.values():
+                if player.alive and player.id != bomb.owner and player.pos in blast:
+                    owner.score += 100
             chained = [other for other in pending if other.pos in blast]
             for other in chained:
                 pending.remove(other)
@@ -161,9 +164,6 @@ class LocalBomberland:
         for player in self.players.values():
             if player.alive and player.pos in self.explosions:
                 player.alive = False
-                for bomb in exploding:
-                    if bomb.owner != player.id:
-                        self.players[bomb.owner].score += 100
 
     def _blast(self, bomb: Bomb) -> set[Position]:
         cells = {bomb.pos}

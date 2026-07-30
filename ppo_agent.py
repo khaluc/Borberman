@@ -145,9 +145,22 @@ class PPOAgent:
             ):
                 legal.add(action_name)
         bombs = int(me.get("bombs", me.get("bombCount", 0)))
+        radius = int(me.get("radius", me.get("blastRadius", 2)))
+        expert = BomberlandAgent()
+        future_blast = expert._blast_from(
+            (x, y), radius, snapshot.walls, snapshot.boxes
+        )
+        escape = expert._first_step_to(
+            (x, y),
+            lambda cell: cell not in future_blast,
+            snapshot,
+            occupied - {(x, y)},
+            set(snapshot.explosions),
+            max_depth=radius + 5,
+        )
         if (
             bombs > 0
-            and expert_action == Action.PLACE_BOMB.value
+            and escape is not None
             and not any(_entity_position(bomb) == (x, y) for bomb in snapshot.bombs)
         ):
             legal.add(Action.PLACE_BOMB.value)
