@@ -6,6 +6,10 @@ Three-agent Bomberland simulation for the GDGoC AI Challenge:
 - Agent 2: defensive BFS strategy.
 - Agent 3: aggressive A* strategy.
 
+## Demo
+
+![Bomberland AI agents playing](assets/demo.gif)
+
 ## Run the web arena
 
 ```bash
