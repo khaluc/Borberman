@@ -31,6 +31,30 @@ Reward của PPO khuyến khích agent:
 - Chọn thời điểm đặt bom có mục tiêu.
 - Sống sót và trở thành agent cuối cùng.
 
+### Bảng reward
+
+| Sự kiện | Reward |
+|---|---:|
+| Sống qua mỗi Step | **+0,02** |
+| Thoát khỏi vùng nguy hiểm | **+0,20** |
+| Di chuyển gần đối thủ hơn | **+0,03** |
+| Đặt bom có thể trúng thùng hoặc đối thủ | **+0,30** |
+| Phá một thùng | **+1,00** |
+| Hạ một đối thủ | **+10,00** |
+| Trở thành agent cuối cùng | **+15,00** |
+| Đi vào vùng nguy hiểm | **−0,35** |
+| Hành động nhưng vị trí không thay đổi | **−0,02** |
+| Bị loại | **−10,00** |
+
+Điểm phá thùng và hạ đối thủ được chuyển thành reward theo công thức:
+
+```python
+reward += (new_score - old_score) * 0.10
+```
+
+Engine cộng 10 điểm khi phá thùng và 100 điểm khi hạ đối thủ, tương ứng với
+`+1,00` và `+10,00` reward.
+
 ## Chạy đấu trường trên web
 
 Cài đặt thư viện:
