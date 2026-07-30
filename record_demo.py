@@ -106,19 +106,19 @@ def render_frame(engine: LocalBomberland, total_step: int, width: int = 560) -> 
         font=font(12, True),
     )
     labels = ("PPO", "DEFENSIVE", "AGGRESSIVE")
-    x_cursor = padding + 188
+    x_cursor = 170
     for index, player in enumerate(engine.players.values()):
         draw.ellipse((x_cursor, footer_y + 2, x_cursor + 10, footer_y + 12), fill=AGENT_COLORS[index])
         status = labels[index] if player.alive else f"{labels[index]} OUT"
         draw.text((x_cursor + 15, footer_y), status, fill=COLORS["text"], font=font(11, True))
-        x_cursor += 128
+        x_cursor += 125
     return image
 
 
 def create_match(seed: int):
     engine = LocalBomberland(seed=seed, player_count=3)
     agents = {
-        "agent_1": PPOAgent("bomberland_ppo.pt", stochastic=True),
+        "agent_1": PPOAgent("bomberland_ppo.pt", stochastic=False),
         "agent_2": DefensiveAgent(),
         "agent_3": AggressiveAgent(),
     }
@@ -126,8 +126,8 @@ def create_match(seed: int):
 
 
 def record(output: Path, frames: int = 420) -> None:
-    torch.manual_seed(16)
-    engine, agents = create_match(16)
+    torch.manual_seed(22)
+    engine, agents = create_match(22)
     images = []
     for total_step in range(frames):
         images.append(render_frame(engine, total_step))
