@@ -1,47 +1,81 @@
 # Bomberland AI Agents
 
-Three-agent Bomberland simulation for the GDGoC AI Challenge:
+Dự án mô phỏng Bomberland gồm ba AI agent với ba chiến thuật khác nhau, được xây
+dựng cho GDGoC AI Challenge.
 
-- Agent 1: shared PPO policy with a safety shield.
-- Agent 2: defensive BFS strategy.
-- Agent 3: aggressive A* strategy.
+- **Agent 1 — PPO Agent:** học bằng reinforcement learning, kết hợp safety shield.
+- **Agent 2 — Defensive Agent:** phòng thủ, tính vùng nguy hiểm và tìm đường bằng BFS.
+- **Agent 3 — Aggressive Agent:** chủ động săn đối thủ bằng A* và đặt bom gây áp lực.
 
-## Demo
+## Video demo
 
-![Bomberland AI agents — longest active match](assets/demo-longest.gif)
+GIF dưới đây là trận đấu kết thúc tự nhiên dài nhất trong các seed đã kiểm tra.
+Video dừng ngay khi trận đấu kết thúc, không thêm các frame đứng im.
 
-## PPO benchmark
+![Ba Bomberland AI agent thi đấu](assets/demo-longest.gif)
 
-Agent 1 was evaluated against the Defensive and Aggressive agents over 30
-matches, with a maximum of 200 steps per match.
+## Kết quả đánh giá PPO
 
-| Metric | Result |
+Agent 1 được đánh giá qua 30 trận đấu với Defensive Agent và Aggressive Agent.
+Mỗi trận có tối đa 200 Step.
+
+| Chỉ số | Kết quả |
 |---|---:|
-| Win rate | **36.7%** (11/30) |
-| Survival rate | **40.0%** (12/30) |
-| Average score | **24.7** |
-| Bomb actions | **178** |
+| Tỷ lệ thắng | **36,7%** — 11/30 trận |
+| Tỷ lệ sống sót | **40%** — 12/30 trận |
+| Điểm trung bình | **24,7** |
+| Tổng hành động đặt bom | **178** |
 
-The PPO reward encourages bomb avoidance, box destruction, opponent pressure,
-well-timed bomb placement, and surviving as the final agent.
+Reward của PPO khuyến khích agent:
 
-## Run the web arena
+- Né bom và thoát khỏi vùng nguy hiểm.
+- Phá thùng để mở đường.
+- Tiếp cận và săn đối thủ.
+- Chọn thời điểm đặt bom có mục tiêu.
+- Sống sót và trở thành agent cuối cùng.
+
+## Chạy đấu trường trên web
+
+Cài đặt thư viện:
 
 ```bash
 pip install -r requirements.txt
+```
+
+Khởi động web:
+
+```bash
 python app.py
 ```
 
-Open <http://127.0.0.1:8001>.
+Sau đó mở:
 
-## Train PPO
-
-```bash
-python train_ppo.py --matches 2000 --output bomberland_ppo.pt
+```text
+http://127.0.0.1:8001
 ```
 
-## Run in the terminal
+## Huấn luyện PPO
+
+Huấn luyện model mới:
+
+```bash
+python train_ppo.py --matches 1000 --output bomberland_ppo.pt
+```
+
+Tiếp tục huấn luyện từ checkpoint hiện có:
+
+```bash
+python train_ppo.py --matches 500 --output bomberland_ppo.pt --resume
+```
+
+## Chạy engine trong terminal
 
 ```bash
 python local_engine.py --steps 200 --show-map
+```
+
+## Tạo lại GIF demo
+
+```bash
+python record_demo.py
 ```
