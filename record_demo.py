@@ -6,6 +6,7 @@ import argparse
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
+import torch
 
 from local_engine import LocalBomberland
 from ppo_agent import PPOAgent
@@ -40,7 +41,7 @@ def font(size: int, bold: bool = False):
     return ImageFont.load_default()
 
 
-def render_frame(engine: LocalBomberland, width: int = 560) -> Image.Image:
+def render_frame(engine: LocalBomberland, total_step: int, width: int = 560) -> Image.Image:
     padding, header, footer = 30, 82, 72
     board_size = width - padding * 2
     cell = board_size // engine.size
@@ -98,9 +99,14 @@ def render_frame(engine: LocalBomberland, width: int = 560) -> Image.Image:
         draw.text((cx - 4, cy - 7), label, fill="#111611", font=font(13, True))
 
     footer_y = header + board_size + 20
-    draw.text((padding, footer_y), f"STEP {engine.step_number:04d}", fill=COLORS["muted"], font=font(13, True))
+    draw.text(
+        (padding, footer_y),
+        f"STEP {total_step:04d} / SINGLE MATCH",
+        fill=COLORS["muted"],
+        font=font(12, True),
+    )
     labels = ("PPO", "DEFENSIVE", "AGGRESSIVE")
-    x_cursor = padding + 110
+    x_cursor = padding + 188
     for index, player in enumerate(engine.players.values()):
         draw.ellipse((x_cursor, footer_y + 2, x_cursor + 10, footer_y + 12), fill=AGENT_COLORS[index])
         status = labels[index] if player.alive else f"{labels[index]} OUT"
@@ -109,18 +115,22 @@ def render_frame(engine: LocalBomberland, width: int = 560) -> Image.Image:
     return image
 
 
-def record(output: Path, frames: int = 100) -> None:
-    engine = LocalBomberland(seed=18, player_count=3)
+def create_match(seed: int):
+    engine = LocalBomberland(seed=seed, player_count=3)
     agents = {
         "agent_1": PPOAgent("bomberland_ppo.pt", stochastic=True),
         "agent_2": DefensiveAgent(),
         "agent_3": AggressiveAgent(),
     }
+    return engine, agents
+
+
+def record(output: Path, frames: int = 420) -> None:
+    torch.manual_seed(16)
+    engine, agents = create_match(16)
     images = []
-    for _ in range(frames):
-        images.append(render_frame(engine))
-        if engine.finished(frames):
-            break
+    for total_step in range(frames):
+        images.append(render_frame(engine, total_step))
         state = engine.state()
         actions = {
             key: agent.next_action(state, key)
@@ -143,6 +153,6 @@ def record(output: Path, frames: int = 100) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=Path("assets/demo.gif"))
-    parser.add_argument("--frames", type=int, default=100)
+    parser.add_argument("--frames", type=int, default=420)
     args = parser.parse_args()
     record(args.output, args.frames)
